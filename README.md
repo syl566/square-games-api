@@ -1,163 +1,258 @@
-Square Games API
+# 🎮 Square Games API
 
-Projet Spring Boot réalisé dans le cadre de l’apprentissage des APIs REST avec Java et Spring Boot.
+> API REST développée en Java avec Spring Boot dans le cadre de ma formation **Concepteur Développeur d’Applications (Bac+3)** au Campus Numérique in the Alps, Grenoble.
 
-Objectifs du projet
+---
 
-Ce projet permet de :
+# 📖 Description
 
-découvrir Spring Boot
-créer des endpoints REST
-utiliser l’injection de dépendances
-communiquer avec un moteur de jeu externe
-tester une API avec Bruno
-manipuler des UUID
-organiser une architecture Controller / Service
-Technologies utilisées
-Java 21
-Spring Boot
-Maven
-Bruno
-IntelliJ IDEA
-GitHub Packages
-Structure du projet
+Square Games API est une API REST permettant de créer et gérer des parties de jeux de plateau.
+
+Le projet utilise un moteur de jeu externe (`square-games-engine`) afin de manipuler des parties, des joueurs et des plateaux de jeu.
+
+L’objectif pédagogique du projet est de découvrir :
+
+* Spring Boot
+* les APIs REST
+* l’injection de dépendances
+* Maven
+* les services et controllers
+* les UUID
+* les tests HTTP avec Bruno
+
+---
+
+# 🚀 Fonctionnalités
+
+## ❤️ Heartbeat
+
+Endpoint permettant de simuler un rythme cardiaque aléatoire.
+
+```http
+GET /heartbeat
+```
+
+Exemple de réponse :
+
+```json
+72
+```
+
+---
+
+## 🎲 Catalogue des jeux
+
+Récupération des jeux disponibles.
+
+```http
+GET /games
+```
+
+Réponse :
+
+```json
+[
+  "tictactoe"
+]
+```
+
+---
+
+## 🏗️ Création d’une partie
+
+Création d’une nouvelle partie de TicTacToe.
+
+```http
+POST /games
+```
+
+Body JSON :
+
+```json
+{
+  "playerCount": 2,
+  "boardSize": 3
+}
+```
+
+Réponse :
+
+```json
+"550e8400-e29b-41d4-a716-446655440000"
+```
+
+Chaque partie reçoit un UUID unique.
+
+---
+
+## 🎮 Récupération d’une partie
+
+```http
+GET /games/{gameId}
+```
+
+Exemple :
+
+```http
+GET /games/550e8400-e29b-41d4-a716-446655440000
+```
+
+---
+
+# 🏗️ Architecture
+
+Le projet utilise une architecture Spring Boot classique :
+
+```text
+Controller
+    ↓
+Service
+    ↓
+GameFactory
+    ↓
+Game Engine
+```
+
+---
+
+# 📂 Structure du projet
+
+```text
 src/main/java/com/example/heartbeat
 │
-├── config
+├── config/
 │   └── GameConfig
 │
-├── controller
+├── controller/
 │   ├── GameCatalogController
 │   ├── GameController
 │   └── HeartbeatController
 │
-├── dto
+├── dto/
 │   └── CreateGameRequest
 │
-├── catalog
+├── catalog/
 │   ├── GameCatalog
 │   └── GameCatalogImpl
 │
-├── service
+├── service/
 │   ├── GameService
 │   ├── GameServiceImpl
 │   ├── HeartbeatSensor
 │   └── RandomHeartbeat
 │
 └── HeartbeatApplication
-Fonctionnement général
-Heartbeat
+```
 
-Le endpoint /heartbeat retourne une valeur aléatoire simulant un rythme cardiaque.
+---
 
-Exemple :
+# 🧠 Concepts Spring Boot appris
 
-72
-Catalogue des jeux
+## ✅ @RestController
 
-Le endpoint /games (GET) retourne les jeux disponibles.
+Création d’endpoints REST.
 
-Exemple :
+---
 
-[
-  "tictactoe"
-]
-Création d’une partie
+## ✅ @Service
 
-Le endpoint POST /games permet de créer une nouvelle partie.
+Déclaration des services métier Spring.
 
-Body JSON :
+---
 
-{
-  "playerCount": 2,
-  "boardSize": 3
-}
+## ✅ Injection de dépendances
 
-Réponse :
+Utilisation de :
 
-"550e8400-e29b-41d4-a716-446655440000"
+* `@Autowired`
+* injection par constructeur
 
-L’UUID représente l’identifiant unique de la partie.
+---
 
-Récupération d’une partie
+## ✅ @RequestBody
 
-Le endpoint GET /games/{gameId} retourne l’état d’une partie.
+Transformation automatique du JSON en objet Java.
 
-Exemple :
+---
 
-GET /games/550e8400-e29b-41d4-a716-446655440000
-Concepts Spring Boot appris
-@RestController
+## ✅ @PathVariable
 
-Permet de créer un contrôleur REST.
+Récupération dynamique des valeurs dans l’URL.
 
-@Service
+---
 
-Permet de déclarer une classe de service Spring.
+## ✅ UUID
 
-@Autowired
+Gestion d’identifiants uniques pour les parties.
 
-Permet l’injection automatique de dépendances.
+---
 
-Injection par constructeur
+# 🛠️ Technologies utilisées
 
-Méthode recommandée pour injecter les dépendances.
+| Technologie     | Usage                   |
+| --------------- | ----------------------- |
+| Java 21         | Langage principal       |
+| Spring Boot     | Framework backend       |
+| Maven           | Gestion des dépendances |
+| Bruno           | Test des endpoints HTTP |
+| IntelliJ IDEA   | IDE                     |
+| GitHub Packages | Dépendance privée       |
+| Git             | Versioning              |
 
-Exemple :
+---
 
-public GameController(GameService gameService) {
-    this.gameService = gameService;
-}
-@PathVariable
+# 🚀 Installation du projet
 
-Permet de récupérer une valeur présente dans l’URL.
+## 📦 Prérequis
 
-Exemple :
+* Java 21+
+* Maven
+* IntelliJ IDEA
+* Git
+* Bruno (optionnel mais recommandé)
 
-@GetMapping("/games/{gameId}")
-public Game getGame(@PathVariable UUID gameId)
-@RequestBody
+---
 
-Transforme automatiquement un JSON en objet Java.
+# 1️⃣ Cloner le projet
 
-Installation du projet sur un nouveau PC
-1. Installer Java 21
-
-Vérifier l’installation :
-
-java -version
-
-Le projet utilise Java 21.
-
-2. Installer IntelliJ IDEA
-
-Télécharger IntelliJ IDEA Community Edition.
-
-3. Cloner le projet
+```bash
 git clone <url-du-repository>
+```
 
 Puis entrer dans le dossier :
 
+```bash
 cd square-games-api
-Configuration GitHub Packages
+```
 
-Le projet utilise une dépendance privée hébergée sur GitHub Packages.
+---
 
-Il faut donc configurer Maven.
+# 2️⃣ Configurer GitHub Packages
 
-4. Créer un Personal Access Token GitHub
+Le projet utilise une dépendance privée Maven.
 
-Créer un token GitHub avec accès :
+Créer un Personal Access Token GitHub avec :
 
+```text
 read:packages
-5. Créer le fichier Maven settings.xml
+```
+
+---
+
+# 3️⃣ Créer le fichier Maven
 
 Créer le fichier :
 
+```text
 ~/.m2/settings.xml
-6. Ajouter la configuration suivante
-<settings>
+```
 
+---
+
+# 4️⃣ Ajouter la configuration Maven
+
+```xml
+<settings>
 
     <servers>
         <server>
@@ -167,92 +262,149 @@ Créer le fichier :
         </server>
     </servers>
 
-
 </settings>
-Vérifier les dépendances Maven
+```
+
+---
+
+# 5️⃣ Télécharger les dépendances
 
 Depuis le dossier du projet :
 
+```bash
 ./mvnw dependency:resolve -U
+```
 
-Si tout fonctionne, Maven télécharge les dépendances.
+---
 
-Lancer le projet
+# ▶️ Lancer le projet
 
-Depuis IntelliJ :
+Depuis IntelliJ IDEA :
 
 Lancer :
 
+```text
 HeartbeatApplication
+```
 
 Ou en terminal :
 
+```bash
 ./mvnw spring-boot:run
-Vérification du démarrage
+```
+
+---
+
+# ✅ Vérification du démarrage
 
 Le terminal doit afficher :
 
+```text
 Started HeartbeatApplication
-Tester l’API avec Bruno
-Installation Bruno Linux
+```
 
-Télécharger l’AppImage.
+---
 
-Rendre le fichier exécutable :
+# 🧪 Tester l’API avec Bruno
 
+## Lancer Bruno sous Linux
+
+Rendre l’AppImage exécutable :
+
+```bash
 chmod +x bruno_3.4.0_x86_64_linux.AppImage
+```
 
 Lancer Bruno :
 
+```bash
 ./bruno_3.4.0_x86_64_linux.AppImage --no-sandbox
-Endpoints disponibles
-GET /heartbeat
+```
 
-Retourne un rythme cardiaque aléatoire.
+---
 
-GET /games
+# 📡 Endpoints disponibles
 
-Retourne la liste des jeux.
+| Méthode | URL               | Description                            |
+| ------- | ----------------- | -------------------------------------- |
+| GET     | `/heartbeat`      | Retourne un rythme cardiaque aléatoire |
+| GET     | `/games`          | Liste les jeux disponibles             |
+| POST    | `/games`          | Crée une nouvelle partie               |
+| GET     | `/games/{gameId}` | Retourne une partie                    |
 
+---
+
+# 🎯 Exemple de workflow API
+
+## Création d’une partie
+
+```http
 POST /games
-
-Crée une nouvelle partie.
+```
 
 Body :
 
+```json
 {
   "playerCount": 2,
   "boardSize": 3
 }
-GET /games/{gameId}
+```
 
-Retourne l’état d’une partie.
+Réponse :
 
-Difficultés rencontrées
+```json
+"550e8400-e29b-41d4-a716-446655440000"
+```
 
-Pendant le développement, j'ai rencontrée plusieurs erreurs :
+---
 
-erreur de bean Spring introuvable
-problème d’injection de dépendances
-mauvaise configuration Maven
-problème GitHub Packages
-UUID invalide dans les URLs
-erreur 400 Bad Request
-erreur ECONNREFUSED dans Bruno
-problème de lancement AppImage Linux
+## Récupération de la partie
 
-Ces erreurs m'ont permis de mieux comprendre Spring Boot et l’écosystème Java.
+```http
+GET /games/550e8400-e29b-41d4-a716-446655440000
+```
 
-Ce que j'ai appris
-créer une API REST
-utiliser Spring Boot
-comprendre les controllers et services
-utiliser Maven
-manipuler des UUID
-tester une API HTTP
-utiliser Bruno
-organiser un projet Java proprement
-utiliser GitHub Packages
-Auteur
+---
 
-Projet réalisé dans le cadre de la formation CDA.
+# ⚠️ Difficultés rencontrées
+
+Pendant le développement,j'ai rencontré plusieurs erreurs:
+
+* Bean Spring introuvable
+* Injection de dépendances incorrecte
+* Mauvaise configuration Maven
+* Problème GitHub Packages
+* UUID invalide
+* Erreur HTTP 400
+* Erreur ECONNREFUSED
+* Configuration AppImage Linux
+
+Ces erreurs m'ont permis de mieux comprendre l’écosystème Spring Boot.
+
+---
+
+# 📚 Concepts Java appliqués
+
+* ✅ Interfaces et implémentations
+* ✅ Injection de dépendances
+* ✅ Architecture Controller / Service
+* ✅ Collections Java (`Map`, `HashMap`)
+* ✅ UUID
+* ✅ APIs REST
+* ✅ JSON
+* ✅ Maven
+* ✅ Spring Boot
+
+---
+
+# 👩‍💻 Auteur
+
+**Sylvie Bal** — Développeuse Java/Web en formation CDA (Bac+3)
+
+---
+
+# 📄 Licence
+
+Projet réalisé dans le cadre de la formation CDA — Campus Numérique in the Alps, Grenoble 2025-2026.
+
