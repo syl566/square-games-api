@@ -1,4 +1,4 @@
-package com.example.heartbeat;
+package com.example.heartbeat.service;
 
 import org.springframework.stereotype.Service;
 

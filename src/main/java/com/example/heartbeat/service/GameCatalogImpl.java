@@ -1,6 +1,6 @@
-package com.example.heartbeat.catalog;
+package com.example.heartbeat.service;
 
-import com.example.heartbeat.service.GameCatalog;
+import fr.le_campus_numerique.square_games.engine.tictactoe.TicTacToeGameFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -9,6 +9,10 @@ import java.util.List;
 @Service
 public class GameCatalogImpl implements GameCatalog {
 
+    private final TicTacToeGameFactory gameFactory;
+    public GameCatalogImpl(TicTacToeGameFactory gameFactory){
+        this.gameFactory = gameFactory;
+    }
     @Override
     public Collection<String> getGameIds() {
 

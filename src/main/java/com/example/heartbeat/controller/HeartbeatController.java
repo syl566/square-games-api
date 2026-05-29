@@ -1,18 +1,21 @@
-package com.example.heartbeat;
+package com.example.heartbeat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.heartbeat.service.HeartbeatSensor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HeartbeatController {
 
-    @Autowired
-    private HeartbeatSensor heartbeatSensor;
+    private final HeartbeatSensor heartbeatSensor;
+
+    public HeartbeatController(HeartbeatSensor heartbeatSensor) {
+        this.heartbeatSensor = heartbeatSensor;
+    }
 
     @GetMapping("/heartbeat")
+    public int heartbeat() {
 
-    public int Heartbeat() {
         return heartbeatSensor.get();
     }
 }

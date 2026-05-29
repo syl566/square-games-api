@@ -1,10 +1,10 @@
-package com.example.heartbeast;
+package com.example.heartbeat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HeartbeastApplicationTests {
+class HeartbeatApplicationTests {
 
 	@Test
 	void contextLoads() {
