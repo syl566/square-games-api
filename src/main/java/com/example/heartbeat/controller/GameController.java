@@ -6,6 +6,7 @@ import fr.le_campus_numerique.square_games.engine.Game;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -19,33 +20,37 @@ public class GameController {
 
     // CREATE GAME
     @PostMapping("/games")
-    public UUID createGame(@RequestBody GameCreationParams params) {
+    public Optional<Game> createGame(
+            @RequestBody GameCreationParams params
+    ) {
 
-        return gameService.createGame(
-                params.getGameType(),
-                params.getPlayerCount(),
-                params.getBoardSize()
-        );
+        return gameService.createGame(params);
     }
 
     // GET GAME BY ID
     @GetMapping("/games/{gameId}")
-    public Game getGame(@PathVariable UUID gameId) {
+    public Optional<Game> getGame(
+            @PathVariable UUID gameId
+    ) {
 
         return gameService.getGame(gameId);
     }
 
-    // GET ALL GAMES
-    /*@GetMapping("/games")
-    public Collection<UUID> getGames() {
-
-        return gameService.getGames();
-    }*/
-
-    // PLAY / UPDATE GAME
     @PutMapping("/games/{gameId}")
-    public void playMove(@PathVariable UUID gameId) {
+    public Optional<Game> playMove(
+            @PathVariable UUID gameId,
+            @RequestParam int x,
+            @RequestParam int y
+    ) {
 
-        gameService.playMove(gameId);
+        return gameService.playMove(
+                gameId,
+                x,
+                y
+        );
     }
 }
+
+
+
+

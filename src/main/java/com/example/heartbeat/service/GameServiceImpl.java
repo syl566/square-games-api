@@ -1,7 +1,9 @@
 package com.example.heartbeat.service;
 
+import com.example.heartbeat.dto.GameCreationParams;
 import fr.le_campus_numerique.square_games.engine.Game;
-import fr.le_campus_numerique.square_games.engine.tictactoe.TicTacToeGameFactory;
+import fr.le_campus_numerique.square_games.engine.GameStatus;
+import fr.le_campus_numerique.square_games.engine.Token;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -9,44 +11,83 @@ import java.util.*;
 @Service
 public class GameServiceImpl implements GameService {
 
-    private final TicTacToeGameFactory gameFactory;
-
+    private final Map<String, GamePlugin> plugins;
     private final Map<UUID, Game> games = new HashMap<>();
 
-   // Constructeur
-   public GameServiceImpl(TicTacToeGameFactory gameFactory) {
-       this.gameFactory = gameFactory;
-   }
+    public GameServiceImpl(List<GamePlugin> pluginsList) {
+
+        this.plugins = new HashMap<>();
+
+        for (GamePlugin plugin : pluginsList) {
+            plugins.put(plugin.getGameId(), plugin);
+        }
+    }
 
     @Override
-    public UUID createGame(
-            String gameType,
-            int playerCount,
-            int boardSize
-    ) {
+    public Optional<Game> createGame(GameCreationParams params) {
 
-        Game game = gameFactory.createGame(
-                playerCount,
-                boardSize
+        GamePlugin plugin = plugins.get(params.getGameType());
+
+        if (plugin == null) {
+            return Optional.empty();
+        }
+
+        Game game = plugin.createGame(
+                params.getPlayerCount(),
+                params.getBoardSize()
         );
 
         UUID gameId = UUID.randomUUID();
 
         games.put(gameId, game);
 
-        return gameId;
+        return Optional.of(game);
     }
 
     @Override
-    public Game getGame(UUID gameId) {
+    public Optional<Game> getGame(UUID gameId) {
 
-        return games.get(gameId);
+        return Optional.ofNullable(
+                games.get(gameId)
+        );
     }
 
     @Override
-    public void playMove(UUID gameId) {
+    public Optional<GameStatus> getStatus(UUID gameId) {
 
         Game game = games.get(gameId);
 
+        if (game == null) {
+            return Optional.empty();
+        }
 
-    }}
+        return Optional.of(game.getStatus());
+    }
+
+    @Override
+    public Collection<Token> getAvailableTokens(UUID gameId) {
+
+        Game game = games.get(gameId);
+
+        if (game == null) {
+            return Collections.emptyList();
+        }
+
+        return game.getRemainingTokens();
+    }
+
+    @Override
+    public Optional<Game> playMove(UUID gameId, int x, int y) {
+
+        Game game = games.get(gameId);
+
+        if (game == null) {
+            return Optional.empty();
+        }
+
+        // À adapter selon le moteur
+        game.getPlayerIds();
+
+        return Optional.of(game);
+    }
+}
