@@ -1,32 +1,49 @@
 package com.example.heartbeat.service;
 
+import com.example.heartbeat.dao.GameDao;
 import com.example.heartbeat.dto.GameCreationParams;
 import fr.le_campus_numerique.square_games.engine.Game;
 import fr.le_campus_numerique.square_games.engine.GameStatus;
 import fr.le_campus_numerique.square_games.engine.Token;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class GameServiceImpl implements GameService {
 
     private final Map<String, GamePlugin> plugins;
-    private final Map<UUID, Game> games = new HashMap<>();
+    private final GameDao gameDao;
 
-    public GameServiceImpl(List<GamePlugin> pluginsList) {
+    public GameServiceImpl(
+            List<GamePlugin> pluginsList,
+            GameDao gameDao)
+    {
 
         this.plugins = new HashMap<>();
+        this.gameDao = gameDao;
 
         for (GamePlugin plugin : pluginsList) {
-            plugins.put(plugin.getGameId(), plugin);
+            plugins.put(
+                    plugin.getGameId(),
+                    plugin
+            );
         }
     }
 
     @Override
-    public Optional<Game> createGame(GameCreationParams params) {
+    public Optional<Game> createGame(
+            GameCreationParams params
+    ) {
 
-        GamePlugin plugin = plugins.get(params.getGameType());
+        GamePlugin plugin =
+                plugins.get(params.getGameType());
 
         if (plugin == null) {
             return Optional.empty();
@@ -37,56 +54,72 @@ public class GameServiceImpl implements GameService {
                 params.getBoardSize()
         );
 
-        UUID gameId = UUID.randomUUID();
-
-        games.put(gameId, game);
+        gameDao.upsert(game);
 
         return Optional.of(game);
     }
 
     @Override
-    public Optional<Game> getGame(UUID gameId) {
+    public Optional<Game> getGame(
+            UUID gameId
+    ) {
 
-        return Optional.ofNullable(
-                games.get(gameId)
-        );
+        return gameDao.findById(gameId);
     }
 
     @Override
-    public Optional<GameStatus> getStatus(UUID gameId) {
+    public Optional<GameStatus> getStatus(
+            UUID gameId
+    ) {
 
-        Game game = games.get(gameId);
+        Optional<Game> gameOpt =
+                gameDao.findById(
+                        gameId
+                );
 
-        if (game == null) {
-            return Optional.empty();
-        }
+        return gameOpt.map(Game::getStatus);
 
-        return Optional.of(game.getStatus());
     }
 
     @Override
-    public Collection<Token> getAvailableTokens(UUID gameId) {
+    public Collection<Token> getAvailableTokens(
+            UUID gameId
+    ) {
 
-        Game game = games.get(gameId);
+        Optional<Game> gameOpt =
+                gameDao.findById(
+                        gameId
+                );
 
-        if (game == null) {
+        if (gameOpt.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return game.getRemainingTokens();
+        return gameOpt.get().getRemainingTokens();
     }
 
     @Override
-    public Optional<Game> playMove(UUID gameId, int x, int y) {
+    public Optional<Game> playMove(
+            UUID gameId,
+            int x,
+            int y
+    ) {
 
-        Game game = games.get(gameId);
+        Optional<Game> gameOpt =
+                gameDao.findById(
+                        gameId
+                );
 
-        if (game == null) {
+        if (gameOpt.isEmpty()) {
             return Optional.empty();
         }
 
-        // À adapter selon le moteur
-        game.getPlayerIds();
+        Game game = gameOpt.get();
+
+        // À adapter selon l'API réelle du moteur
+        // game.play(x, y);
+
+        gameDao.upsert(game);
 
         return Optional.of(game);
     }

@@ -5,7 +5,6 @@ import com.example.heartbeat.service.GameService;
 import fr.le_campus_numerique.square_games.engine.Game;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
