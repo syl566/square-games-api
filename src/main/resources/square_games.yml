@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: square_games
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+
+     - "3306:3306"
+    volumes:
+      - square_games:/var/lib/postgresql
+
+volumes:
+  square_games:
+
+spring:
+      datasource:
+        url: jdbc:mysql://localhost:3306/square_games
+        username: root
+        password: root
+      jpa:
+        hibernate:
+          ddl-auto: update
+        show-sql: true
